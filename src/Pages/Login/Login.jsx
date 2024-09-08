@@ -1,25 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import "./styles.css"; 
 import vector from "./vector.png";
 
 const Login = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:5000/api/auth/login", formData);
+      alert(response.data.message);
+    } catch (error) {
+      console.error(error.response.data);
+      alert(error.response.data.message);
+    }
+  };
+
   return (
     <div className="container">
       <div className="leftPanel">
         <div className="loginBox">
           <h2 className="heading">Login</h2>
           <p className="subheading">Enter your account details</p>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="inputGroup">
               <label>Username</label>
-              <input type="text" placeholder="Username" className="input" />
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                className="input"
+                value={formData.username}
+                onChange={handleChange}
+              />
             </div>
             <div className="inputGroup">
               <label>Password</label>
               <input
                 type="password"
+                name="password"
                 placeholder="Password"
                 className="input"
+                value={formData.password}
+                onChange={handleChange}
               />
               <div className="eyeIcon">&#128065;</div>
             </div>
@@ -36,11 +70,6 @@ const Login = () => {
       </div>
 
       <div className="rightPanel">
-        {/* <div className="textContainer">
-          <h1 className="welcomeText">Welcome to</h1>
-          <h1 className="portalText">student portal</h1>
-          <p className="subText">Login to access your account</p>
-        </div> */}
         <div className="vectorContainer">
           <img
             src={vector}
